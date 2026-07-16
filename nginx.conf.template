@@ -4,7 +4,10 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # API 反向代理 → ThinkPHP 后端
+    # 文件上传大小限制
+    client_max_body_size 50M;
+
+    # API 反向代理 -> ThinkPHP 后端
     location /adminapi/ {
         proxy_pass ${API_TARGET}/adminapi/;
         proxy_set_header Host $host;
