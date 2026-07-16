@@ -31,6 +31,8 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/imusic-admin:latest
             ${{ secrets.DOCKER_USERNAME }}/imusic-admin:${{ steps.version.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     needs: build-and-push
