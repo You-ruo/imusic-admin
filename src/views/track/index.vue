@@ -4,6 +4,11 @@
       <div class="tb">
         <el-input v-model="keyword" placeholder="搜索歌名/艺人/专辑" clearable style="width:240px" @clear="search" @keyup.enter="search" />
         <el-button @click="search">搜索</el-button>
+        <el-select v-model="trialFilter" style="width:100px;margin-left:12px" @change="search">
+          <el-option label="全部" value="" />
+          <el-option label="试听版" :value="1" />
+          <el-option label="非试听版" :value="0" />
+        </el-select>
         <el-button type="primary" @click="openDialog()">新增曲目</el-button>
       </div>
       <el-table :data="list" v-loading="loading" stripe>
@@ -19,6 +24,18 @@
         <el-table-column prop="artist_name" label="艺人" width="100" />
         <el-table-column prop="track_no" label="序号" width="60" />
         <el-table-column prop="duration_sec" label="时长(s)" width="80" />
+        <el-table-column label="试听" width="70">
+          <template #default="{ row }">
+            <el-tag v-if="row.is_trial === 1" type="danger" size="small">试听</el-tag>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="来源" width="80">
+          <template #default="{ row }">
+            <el-tag v-if="row.source === 'netease'" type="warning" size="small">网易云</el-tag>
+            <span v-else>本地</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="play_count" label="播放量" width="100" />
         <el-table-column label="播放" width="70">
           <template #default="{ row }">
@@ -117,6 +134,7 @@ const total = ref(0)
 const limit = 20
 const currentTrack = ref(0)
 const keyword = ref('')
+const trialFilter = ref('')
 const audioRef = ref(null)
 const artists = ref([])
 
@@ -134,13 +152,16 @@ async function fetchArtists() {
 
 function search() {
   page.value = 1
+  trialFilter.value = ''
   fetch()
 }
 
 async function fetch() {
   loading.value = true
   try {
-    const res = await http.get('/track/list', { params: { page: page.value, limit, keyword: keyword.value } })
+    const params = { page: page.value, limit, keyword: keyword.value }
+    if (trialFilter.value !== '') params.is_trial = trialFilter.value
+    const res = await http.get('/track/list', { params })
     if (res.status === 200 && res.data) {
       list.value = res.data.list || []
       total.value = res.data.total || 0
