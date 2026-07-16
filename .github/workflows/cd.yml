@@ -33,7 +33,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/imusic-admin:${{ steps.version.outputs.VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          driver: docker
+          builder: default
 
   deploy:
     needs: build-and-push
