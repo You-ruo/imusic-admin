@@ -27,9 +27,9 @@ export default defineConfig({
     proxy: {
       // 转发到同源路径 /adminapi/...（ThinkPHP 多应用 app 名为 adminapi，不能去掉前缀）
       '/adminapi': {
-        // target: 'http://127.0.0.1:8000',
+        // target: 'http://127.0.0.1:8080',
         // 线上
-        target: 'http://81.71.155.61:80',
+        target: 'http://81.71.155.61:8080',
         changeOrigin: true
       }
     }
