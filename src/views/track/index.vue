@@ -44,8 +44,8 @@
         <el-table-column prop="play_count" label="播放量" width="100" />
         <el-table-column label="播放" width="70">
           <template #default="{ row }">
-            <el-button text :type="currentTrack === row.id ? 'warning' : 'primary'" :disabled="!row.play_path" @click="togglePlay(row)">
-              {{ currentTrack === row.id ? '暂停' : '播放' }}
+            <el-button text type="primary" :disabled="!row.play_path" @click="togglePlay(row)">
+              播放
             </el-button>
           </template>
         </el-table-column>
@@ -117,12 +117,11 @@
         <el-button type="primary" :loading="saving" @click="save">保存</el-button>
       </template>
     </el-dialog>
-    <audio ref="audioRef" @ended="onAudioEnded" style="display:none" />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onUnmounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import http from '@/api'
@@ -137,11 +136,9 @@ const list = ref([])
 const page = ref(1)
 const total = ref(0)
 const limit = 20
-const currentTrack = ref(0)
 const keyword = ref('')
 const trialFilter = ref('')
 const sourceFilter = ref('')
-const audioRef = ref(null)
 const artists = ref([])
 
 const defaultForm = () => ({ id: 0, title: '', artist_id: 0, album_id: 0, track_no: 0, duration_sec: 0, cover: '', play_path: '', lyric: '', status: 1 })
@@ -203,33 +200,13 @@ function togglePlay(row) {
     ElMessage.warning('该曲目没有音频文件')
     return
   }
-  if (currentTrack.value === row.id) {
-    audioRef.value.pause()
-    audioRef.value.currentTime = 0
-    currentTrack.value = 0
-    return
-  }
-  audioRef.value.src = row.play_path
-  audioRef.value.play().catch(() => ElMessage.error('播放失败'))
-  currentTrack.value = row.id
 
   const url = router.resolve({ name: 'TrackPlay', params: { id: row.id } }).href
   const win = window.open(url, '_blank')
   if (!win) ElMessage.warning('请允许浏览器打开新窗口')
 }
 
-function onAudioEnded() {
-  currentTrack.value = 0
-}
-
-onUnmounted(() => {
-  if (audioRef.value) {
-    audioRef.value.pause()
-    audioRef.value.src = ''
-  }
-})
-
-async function toggleStatus(row) {
+function toggleStatus(row) {
   try {
     await http.post('/track/save', { id: row.id, status: row.status === 1 ? 0 : 1, title: row.title, album_id: row.album_id ?? 0, artist_id: row.artist_id ?? 0 })
     ElMessage.success('状态已更新')
