@@ -206,7 +206,7 @@ function togglePlay(row) {
   if (!win) ElMessage.warning('请允许浏览器打开新窗口')
 }
 
-function toggleStatus(row) {
+async function toggleStatus(row) {
   try {
     await http.post('/track/save', { id: row.id, status: row.status === 1 ? 0 : 1, title: row.title, album_id: row.album_id ?? 0, artist_id: row.artist_id ?? 0 })
     ElMessage.success('状态已更新')
