@@ -9,6 +9,11 @@
           <el-option label="试听版" :value="1" />
           <el-option label="非试听版" :value="0" />
         </el-select>
+        <el-select v-model="sourceFilter" style="width:100px;margin-left:12px" @change="search">
+          <el-option label="全部" value="" />
+          <el-option label="网易云" value="netease" />
+          <el-option label="本地" value="local" />
+        </el-select>
         <el-button type="primary" @click="openDialog()">新增曲目</el-button>
       </div>
       <el-table :data="list" v-loading="loading" stripe>
@@ -135,6 +140,7 @@ const limit = 20
 const currentTrack = ref(0)
 const keyword = ref('')
 const trialFilter = ref('')
+const sourceFilter = ref('')
 const audioRef = ref(null)
 const artists = ref([])
 
@@ -152,7 +158,6 @@ async function fetchArtists() {
 
 function search() {
   page.value = 1
-  trialFilter.value = ''
   fetch()
 }
 
@@ -161,6 +166,7 @@ async function fetch() {
   try {
     const params = { page: page.value, limit, keyword: keyword.value }
     if (trialFilter.value !== '') params.is_trial = trialFilter.value
+    if (sourceFilter.value !== '') params.source = sourceFilter.value
     const res = await http.get('/track/list', { params })
     if (res.status === 200 && res.data) {
       list.value = res.data.list || []
