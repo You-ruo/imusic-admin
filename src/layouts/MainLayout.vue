@@ -91,4 +91,9 @@ body { margin: 0; }
 .header-right { display: flex; align-items: center; gap: 12px; }
 .admin-name { font-size: 14px; color: #666; }
 .el-main { background: #f0f2f5; }
+
+/* 子菜单项缩进对齐：确保文字起点与父菜单标题文字对齐 */
+.el-menu--inline .el-menu-item {
+  padding-left: 44px !important;
+}
 </style>
