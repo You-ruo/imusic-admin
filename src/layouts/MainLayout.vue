@@ -29,6 +29,7 @@
           </template>
           <el-menu-item index="/banner">Banner 管理</el-menu-item>
           <el-menu-item index="/recommend">推荐池管理</el-menu-item>
+          <el-menu-item index="/rank">排行榜管理</el-menu-item>
           <el-menu-item index="/message">消息管理</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="system">

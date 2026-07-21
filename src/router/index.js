@@ -55,6 +55,12 @@ const routes = [
         meta: { title: '推荐池管理' }
       },
       {
+        path: 'rank',
+        name: 'Rank',
+        component: () => import('@/views/rank/index.vue'),
+        meta: { title: '排行榜管理' }
+      },
+      {
         path: 'message',
         name: 'Message',
         component: () => import('@/views/message/index.vue'),
